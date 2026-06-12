@@ -616,7 +616,7 @@ function toggleSidebar(){document.getElementById('sidebar').classList.toggle('op
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 
 // ── PASSWORD LOCK ──
-const CORRECT_HASH = '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'; // "password" default - will be set by user
+const CORRECT_HASH = 'ad356a1e180a505683c32b1b246f0d5eed9be06baa02985464764abc5e305f01'; // "password" default - will be set by user
 const LOCK_KEY = 'fh_unlocked_v1';
 const ATTEMPTS_KEY = 'fh_attempts_v1';
 const LOCKOUT_KEY = 'fh_lockout_v1';
@@ -698,7 +698,7 @@ function toggleLockVis() {
 }
 
 function showHint() {
-  const hint = localStorage.getItem('fh_pw_hint') || 'No hint set. Default password: freelance2024';
+  const hint = localStorage.getItem('fh_pw_hint') || 'Default password: freelance2024';
   alert('Hint: ' + hint);
 }
 

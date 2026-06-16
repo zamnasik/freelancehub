@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreelanceHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f0f13;--bg2:#16161d;--bg3:#1e1e28;--bg4:#252532;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--text:#f0f0f5;--text2:#9090a8;--text3:#5a5a72;--accent:#7c6af7;--accent2:#a98fff;--accent-bg:rgba(124,106,247,0.12);--accent-border:rgba(124,106,247,0.3);--green:#34d399;--green-bg:rgba(52,211,153,0.1);--green-border:rgba(52,211,153,0.25);--amber:#fbbf24;--amber-bg:rgba(251,191,36,0.1);--amber-border:rgba(251,191,36,0.25);--red:#f87171;--red-bg:rgba(248,113,113,0.1);--red-border:rgba(248,113,113,0.25);--blue:#60a5fa;--blue-bg:rgba(96,165,250,0.1);--blue-border:rgba(96,165,250,0.25);--radius:10px;--radius-lg:16px;--font-display:"Space Grotesk",sans-serif;--font-body:"Inter",sans-serif;--sidebar-w:220px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;transition:transform 0.25s ease}
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid var(--border)}
+.logo-mark{display:flex;align-items:center;gap:10px}
+.logo-icon{width:34px;height:34px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:18px;height:18px;fill:white}
+.logo-text{font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--text)}
+.logo-sub{font-size:10px;color:var(--text3);margin-top:1px;letter-spacing:0.08em;text-transform:uppercase}
+.nav{padding:14px 12px;flex:1}
+.nav-section-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;padding:0 8px;margin-bottom:6px;margin-top:18px}
+.nav-section-label:first-child{margin-top:0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:13.5px;font-weight:400;transition:all 0.15s;border:none;background:none;width:100%;text-align:left}
+.nav-item svg{width:17px;height:17px;flex-shrink:0;opacity:0.7}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item:hover svg{opacity:1}
+.nav-item.active{background:var(--accent-bg);color:var(--accent2);border:1px solid var(--accent-border);font-weight:500}
+.nav-item.active svg{opacity:1}
+.nav-badge{margin-left:auto;background:var(--accent);color:white;font-size:10px;font-weight:600;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
+.sidebar-footer{padding:14px 16px;border-top:1px solid var(--border)}
+.sidebar-stat{font-size:11px;color:var(--text3);margin-bottom:2px}
+.sidebar-stat-val{font-family:var(--font-display);font-size:13px;color:var(--text2);font-weight:500}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40}
+.page-title{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.sync-status{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--text3)}
+.sync-dot.synced{background:var(--green)}
+.sync-dot.syncing{background:var(--amber);animation:pulse 1s infinite}
+.sync-dot.error{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;border:1px solid transparent;font-family:var(--font-body)}
+.btn-accent{background:var(--accent);color:white;border-color:var(--accent)}
+.btn-accent:hover{background:#6a58e0}
+.btn-ghost{background:none;color:var(--text2);border-color:var(--border2)}
+.btn-ghost:hover{background:var(--bg3);color:var(--text)}
+.btn svg{width:15px;height:15px}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.page-content{padding:28px;flex:1}
+.page{display:none}
+.page.active{display:block}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:26px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;position:relative;overflow:hidden;transition:border-color 0.2s}
+.stat-card:hover{border-color:var(--border2)}
+.stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px}
+.stat-card.c-purple::before{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.stat-card.c-green::before{background:var(--green)}
+.stat-card.c-amber::before{background:var(--amber)}
+.stat-card.c-red::before{background:var(--red)}
+.stat-card.c-blue::before{background:var(--blue)}
+.stat-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px}
+.stat-value{font-family:var(--font-display);font-size:26px;font-weight:600;color:var(--text);line-height:1}
+.stat-value.small{font-size:18px}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:5px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:20px;overflow:hidden}
+.card-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-title{font-family:var(--font-display);font-size:14px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.card-title svg{width:16px;height:16px;color:var(--accent)}
+.filter-bar{padding:14px 22px;border-bottom:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--bg3)}
+.search-wrap{position:relative;flex:1;min-width:200px}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text3);pointer-events:none}
+.filter-bar input,.filter-bar select{padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;background:var(--bg2);color:var(--text);font-family:var(--font-body);outline:none;transition:border-color 0.15s}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--accent-border)}
+.search-wrap input{padding-left:34px;width:100%}
+.filter-bar select{min-width:140px;cursor:pointer}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead{background:var(--bg3)}
+th{padding:10px 16px;text-align:left;font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text);font-size:13px}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{transition:background 0.1s}
+tbody tr:hover td{background:rgba(255,255,255,0.025)}
+.project-name{font-weight:500;max-width:220px}
+.project-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.mono{font-family:"Space Grotesk",monospace;font-size:11px;color:var(--text3)}
+.amount{font-family:var(--font-display);font-size:13px;white-space:nowrap}
+.amount-red{color:var(--red)}
+.amount-green{color:var(--green)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.badge::before{content:"";width:5px;height:5px;border-radius:50%}
+.badge-done{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}.badge-done::before{background:var(--green)}
+.badge-progress{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}.badge-progress::before{background:var(--blue)}
+.badge-pending{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}.badge-pending::before{background:var(--amber)}
+.badge-stopped{background:var(--border);color:var(--text3);border:1px solid var(--border2)}.badge-stopped::before{background:var(--text3)}
+.badge-paid{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}.badge-paid::before{background:var(--green)}
+.badge-partial{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}.badge-partial::before{background:var(--amber)}
+.badge-notpaid{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}.badge-notpaid::before{background:var(--red)}
+.progress-wrap{display:flex;align-items:center;gap:8px}
+.progress-track{height:5px;width:72px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px}
+.progress-pct{font-size:11px;color:var(--text3);min-width:30px}
+.row-actions{display:flex;gap:4px;opacity:0;transition:opacity 0.15s}
+tr:hover .row-actions{opacity:1}
+.icon-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border2);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text3);transition:all 0.15s}
+.icon-btn:hover{background:var(--bg3);color:var(--text)}
+.icon-btn.delete:hover{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+.icon-btn svg{width:14px;height:14px}
+.form-section{padding:22px}
+.form-section+.form-section{border-top:1px solid var(--border)}
+.form-section-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:16px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:11.5px;font-weight:500;color:var(--text2)}
+.form-group input,.form-group select,.form-group textarea{padding:9px 13px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;background:var(--bg3);color:var(--text);font-family:var(--font-body);outline:none;transition:border-color 0.15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent-border);background:var(--bg2)}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-actions{padding:16px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;background:var(--bg3)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(3px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);width:100%;max-width:680px;max-height:90vh;overflow-y:auto;transform:translateY(16px);transition:transform 0.25s ease}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-header{padding:20px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:5}
+.modal-title{font-family:var(--font-display);font-size:16px;font-weight:600}
+.toast{position:fixed;bottom:24px;right:24px;z-index:999;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 18px;font-size:13px;color:var(--text);display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.4);transform:translateY(80px);opacity:0;transition:all 0.3s ease;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast svg{width:16px;height:16px;flex-shrink:0}
+.toast.success svg{color:var(--green)}
+.toast.error svg{color:var(--red)}
+.hamburger{display:none;background:none;border:1px solid var(--border2);border-radius:var(--radius);padding:7px;cursor:pointer;color:var(--text2)}
+.hamburger svg{width:18px;height:18px;display:block}
+.divider{height:1px;background:var(--border);margin:0 22px}
+.highlight-row td{background:rgba(248,113,113,0.04)}
+.highlight-row:hover td{background:rgba(248,113,113,0.07)!important}
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:130px}
+.bar-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.bar{width:100%;max-width:42px;border-radius:5px 5px 0 0;min-height:4px;background:linear-gradient(180deg,var(--accent2),var(--accent));cursor:pointer;transition:opacity 0.2s}
+.bar:hover{opacity:0.8}
+.bar-val{font-size:10px;color:var(--text3);white-space:nowrap}
+.bar-label{font-size:10px;color:var(--text3)}
+.empty{padding:48px;text-align:center;color:var(--text3)}
+.empty svg{width:36px;height:36px;margin-bottom:12px;opacity:0.3}
+.empty p{font-size:14px}
+.chart-area{padding:20px 22px 14px}
+.loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:16px}
+.loading-logo{font-family:var(--font-display);font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.loading-sub{font-size:13px;color:var(--text3)}
+.spinner{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.import-banner{background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.import-banner p{font-size:13px;color:var(--accent2)}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.hamburger{display:flex}.page-content{padding:16px}.stats-grid{grid-template-columns:repeat(2,1fr)}.topbar{padding:0 16px}}
+@media(max-width:480px){.stat-value{font-size:20px}.stat-value.small{font-size:15px}}
+
+.lock-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
+.lock-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:40px 36px;width:100%;max-width:380px;text-align:center}
+.lock-icon{width:56px;height:56px;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.lock-icon svg{width:24px;height:24px;color:var(--accent2)}
+.lock-title{font-family:var(--font-display);font-size:22px;font-weight:600;margin-bottom:6px}
+.lock-sub{font-size:13px;color:var(--text3);margin-bottom:28px}
+.lock-input-wrap{position:relative;margin-bottom:14px}
+.lock-input{width:100%;padding:12px 44px 12px 16px;border:1px solid var(--border2);border-radius:var(--radius);font-size:15px;background:var(--bg3);color:var(--text);font-family:var(--font-body);outline:none;transition:border-color 0.15s;letter-spacing:0.15em;text-align:center}
+.lock-input:focus{border-color:var(--accent-border);background:var(--bg2)}
+.lock-input.shake{animation:shake 0.4s ease}
+.lock-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:4px}
+.lock-toggle:hover{color:var(--text)}
+.lock-toggle svg{width:18px;height:18px}
+.lock-btn{width:100%;padding:12px;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;font-family:var(--font-body);transition:background 0.15s;margin-bottom:12px}
+.lock-btn:hover{background:#6a58e0}
+.lock-btn:disabled{opacity:0.6;cursor:not-allowed}
+.lock-error{font-size:12px;color:var(--red);min-height:18px;margin-bottom:4px}
+.lock-hint{font-size:11px;color:var(--text3)}
+.lock-hint span{color:var(--accent2);cursor:pointer}
+.lock-dots{display:flex;justify-content:center;gap:8px;margin-bottom:24px}
+.lock-dot-item{width:10px;height:10px;border-radius:50%;background:var(--border2);transition:background 0.15s}
+.lock-dot-item.filled{background:var(--accent)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.lock-attempts{font-size:11px;color:var(--text3);margin-top:8px}
+</style>
+</head>
+<body>
+
+
+<!-- LOCK SCREEN -->
+<div class="lock-screen" id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0110 0v4"/>
+      </svg>
+    </div>
+    <div class="lock-title">FreelanceHub</div>
+    <div class="lock-sub">Enter your password to continue</div>
+    <div class="lock-dots" id="lock-dots">
+      <div class="lock-dot-item" id="d1"></div>
+      <div class="lock-dot-item" id="d2"></div>
+      <div class="lock-dot-item" id="d3"></div>
+      <div class="lock-dot-item" id="d4"></div>
+    </div>
+    <div class="lock-input-wrap">
+      <input class="lock-input" id="lock-input" type="password" placeholder="Enter password" maxlength="20" onkeyup="lockKeyUp(event)" oninput="lockDots()">
+      <button class="lock-toggle" onclick="toggleLockVis()" id="lock-vis-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="lock-eye-icon">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+    </div>
+    <div class="lock-error" id="lock-error"></div>
+    <button class="lock-btn" id="lock-btn" onclick="checkPassword()">Unlock</button>
+    <div class="lock-hint">Forgot password? <span onclick="showHint()">Show hint</span></div>
+    <div class="lock-attempts" id="lock-attempts"></div>
+  </div>
+</div>
+
+<!-- LOADING SCREEN -->
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-logo">FreelanceHub</div>
+  <div class="spinner"></div>
+  <div class="loading-sub" id="loading-msg">Connecting to Google Sheets...</div>
+</div>
+
+<div class="app" style="display:none" id="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="19" cy="17" r="3"/></svg></div>
+      <div><div class="logo-text">FreelanceHub</div><div class="logo-sub">Live · Google Sheets</div></div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section-label">Overview</div>
+    <button class="nav-item active" onclick="showPage('dashboard',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </button>
+    <div class="nav-section-label">Work</div>
+    <button class="nav-item" onclick="showPage('projects',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 012-2h3l2 2h9a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+      All projects <span class="nav-badge" id="nb-projects">0</span>
+    </button>
+    <button class="nav-item" onclick="showPage('active',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+      In progress <span class="nav-badge" id="nb-active" style="background:var(--blue)">0</span>
+    </button>
+    <div class="nav-section-label">Finance</div>
+    <button class="nav-item" onclick="showPage('payments',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      Payments <span class="nav-badge" id="nb-unpaid" style="background:var(--red)">0</span>
+    </button>
+    <div class="nav-section-label">Actions</div>
+    <button class="nav-item" onclick="openModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Add new project
+    </button>
+    <button class="nav-item" onclick="syncNow()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      Sync now
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-stat">Total revenue</div>
+    <div class="sidebar-stat-val" id="sf-rev">—</div>
+    <div class="sidebar-stat" style="margin-top:8px">Last synced</div>
+    <div class="sidebar-stat-val" id="sf-sync">—</div>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="hamburger" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="page-title" id="topbar-title">Dashboard</span>
+    </div>
+    <div class="topbar-right">
+      <div class="sync-status"><div class="sync-dot synced" id="sync-dot"></div><span id="sync-label">Synced</span></div>
+      <button class="btn btn-accent" onclick="openModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New project
+      </button>
+    </div>
+  </header>
+
+  <div class="page-content">
+
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid" id="dash-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+        <div class="card" style="margin-bottom:0">
+          <div class="card-header">
+            <span class="card-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Revenue by month
+            </span>
+          </div>
+          <div class="chart-area" id="chart-area"></div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div class="card-header">
+            <span class="card-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+              Needs attention
+            </span>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Project</th><th>Balance</th><th>Payment</th></tr></thead><tbody id="attention-tbody"></tbody></table></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Recent projects
+          </span>
+          <button class="btn btn-ghost" onclick="showPage('projects',document.querySelectorAll('.nav-item')[2])">View all</button>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Code</th><th>Project</th><th>Amount</th><th>Progress</th><th>Status</th><th>Payment</th></tr></thead><tbody id="recent-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-projects">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 012-2h3l2 2h9a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+            All projects
+          </span>
+          <button class="btn btn-accent" onclick="openModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add project
+          </button>
+        </div>
+        <div class="filter-bar">
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="search-input" placeholder="Search by name or code..." oninput="renderProjects()">
+          </div>
+          <select id="filter-status" onchange="renderProjects()"><option value="">All statuses</option><option>Completed</option><option>In Progress</option><option>Pending</option><option>Stoped for now</option></select>
+          <select id="filter-payment" onchange="renderProjects()"><option value="">All payments</option><option value="Fully Paid">Fully paid</option><option value="Partial">Partial</option><option value="Not Paid">Not paid</option></select>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>#</th><th>Code</th><th>Project</th><th>Amount</th><th>Progress</th><th>Balance</th><th>Status</th><th>Payment</th><th>Duration</th><th></th></tr></thead><tbody id="projects-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-active">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+            In progress
+          </span>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Code</th><th>Project</th><th>Amount</th><th>Paid</th><th>Balance</th><th>Payment status</th><th>Duration</th><th></th></tr></thead><tbody id="active-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-payments">
+      <div class="stats-grid" id="pay-stats"></div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Outstanding payments
+          </span>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Code</th><th>Project</th><th>Total</th><th>Paid</th><th>Balance due</th><th>Status</th></tr></thead><tbody id="pay-tbody"></tbody></table></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">All payment records</span></div>
+        <div class="table-wrap"><table><thead><tr><th>Code</th><th>Project</th><th>Total</th><th>Advance</th><th>Pay 1</th><th>Pay 2</th><th>Pay 3</th><th>Balance</th><th>Status</th></tr></thead><tbody id="pay-all-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Add new project</span>
+      <button class="icon-btn" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Project details</div>
+      <div class="form-grid">
+        <div class="form-group full"><label>Project name *</label><input id="f-name" type="text" placeholder="e.g. ML Cyber Security Project"></div>
+        <div class="form-group"><label>Client</label><input id="f-client" type="text" value="Amila"></div>
+        <div class="form-group"><label>Status</label><select id="f-status"><option>In Progress</option><option>Pending</option><option>Completed</option><option>Stoped for now</option></select></div>
+        <div class="form-group"><label>Duration</label><input id="f-duration" type="text" placeholder="e.g. 1 week"></div>
+        <div class="form-group"><label>Date started</label><input id="f-date" type="date"></div>
+        <div class="form-group"><label>Deadline</label><input id="f-deadline" type="date"></div>
+        <div class="form-group full"><label>Notes</label><textarea id="f-about" placeholder="Brief description..."></textarea></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="form-section">
+      <div class="form-section-title">Payment breakdown</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Fixed amount (LKR)</label><input id="f-amount" type="number" placeholder="0" oninput="calcPaid()"></div>
+        <div class="form-group"><label>Payment status</label><select id="f-paystatus"><option>Not Paid</option><option>Partial</option><option>Fully Paid</option></select></div>
+        <div class="form-group"><label>Advance paid</label><input id="f-advance" type="number" placeholder="0" oninput="calcPaid()"></div>
+        <div class="form-group"><label>1st payment</label><input id="f-pay1" type="number" placeholder="0" oninput="calcPaid()"></div>
+        <div class="form-group"><label>2nd payment</label><input id="f-pay2" type="number" placeholder="0" oninput="calcPaid()"></div>
+        <div class="form-group"><label>3rd payment</label><input id="f-pay3" type="number" placeholder="0" oninput="calcPaid()"></div>
+      </div>
+      <div id="form-calc" style="margin-top:14px;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);font-size:12px;color:var(--text2);display:flex;gap:20px;flex-wrap:wrap;"></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-accent" id="save-btn" onclick="saveProject()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save project
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" id="toast-icon"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Saved!</span>
+</div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbxRjXv976QMsrA7Rwd0GOSnhcX6ypN4OE6dEGWOSIXu-yX5IXNeh_E6qWemQWMwXw2PGA/exec';
+const SEED=[{id:1,code:"#Nov-25-001",name:"Esoft 16 Assessment",client:"Amila",amount:48000,advance:20000,pay1:8000,pay2:20000,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 month",about:"Assessment work for Esoft",dateStarted:"2025-11-25",deadline:"2025-12-16",whatsapp:""},{id:2,code:"#Nov-25-002",name:"Use of CCTV research Proposal",client:"Amila",amount:5000,advance:0,pay1:5000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"3 days",about:"Research proposal for police",dateStarted:"2025-11-25",deadline:"2025-12-26",whatsapp:""},{id:3,code:"#Nov-25-003",name:"Management proposal and research work",client:"Amila",amount:18000,advance:0,pay1:15000,pay2:3000,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"2 weeks",about:"Full research Dubai",dateStarted:"2025-11-25",deadline:"2025-12-26",whatsapp:""},{id:4,code:"#Nov-26-004",name:"IT Management Report",client:"Amila",amount:2500,advance:2500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"IT report",dateStarted:"2025-11-26",deadline:"2025-12-27",whatsapp:""},{id:5,code:"#Dec-03-005",name:"Cyber security Testing in Modern Cloud",client:"Amila",amount:6000,advance:0,pay1:6000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"2 weeks",about:"Security testing",dateStarted:"2025-12-03",deadline:"2026-01-03",whatsapp:""},{id:6,code:"#Feb-16-006",name:"Packet Tracer implementation",client:"Amila",amount:5000,advance:0,pay1:5000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Packet tracer work",dateStarted:"2026-02-16",deadline:"2026-03-17",whatsapp:""},{id:7,code:"#Feb-20-007",name:"Vehicle Management MSc",client:"Amila",amount:18000,advance:8000,pay1:10000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"3 weeks",about:"Commercial level website",dateStarted:"2026-02-20",deadline:"2026-03-21",whatsapp:""},{id:8,code:"#Feb-25-008",name:"AI and Plagiarism",client:"Amila",amount:7000,advance:0,pay1:7000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Remove AI detection",dateStarted:"2026-02-25",deadline:"2026-03-24",whatsapp:""},{id:9,code:"#Feb-25-009",name:"AI and Plagiarism 2",client:"Amila",amount:2000,advance:0,pay1:2000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Same as above",dateStarted:"2026-02-25",deadline:"2026-03-24",whatsapp:""},{id:10,code:"#Feb-26-010",name:"3 Assignment and 1 proposal",client:"Amila",amount:15000,advance:5000,pay1:10000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"1 proposal and 3 assessments",dateStarted:"2026-02-26",deadline:"2026-03-25",whatsapp:""},{id:11,code:"#Feb-27-011",name:"Narrative Identity Through Visuals",client:"Amila",amount:2500,advance:0,pay1:2500,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Art and Cal work",dateStarted:"2026-02-27",deadline:"2026-03-26",whatsapp:""},{id:12,code:"#Mar-02-012",name:"Introduction need to add",client:"Amila",amount:2500,advance:0,pay1:2500,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Report feedback work",dateStarted:"2026-03-02",deadline:"2026-03-30",whatsapp:""},{id:13,code:"#Jan-10-013",name:"Report Behavioural Addiction",client:"Amila",amount:1000,advance:1000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Report",dateStarted:"2026-01-10",deadline:"2026-02-09",whatsapp:""},{id:14,code:"#Mar-03-014",name:"Advanced Networking & Security CT6034",client:"Amila",amount:8000,advance:0,pay1:8000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Networking assignment",dateStarted:"2026-03-03",deadline:"2026-03-31",whatsapp:""},{id:15,code:"#Feb-28-015",name:"Breast Cancer Research",client:"Amila",amount:11000,advance:5500,pay1:5500,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Research 1st part",dateStarted:"2026-02-28",deadline:"2026-03-28",whatsapp:""},{id:16,code:"#Feb-28-016",name:"Contextual knowledge assignment",client:"Amila",amount:5000,advance:5000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Art assignment",dateStarted:"2026-02-28",deadline:"2026-03-29",whatsapp:""},{id:17,code:"#Mar-06-017",name:"OOP Python Data Analysis",client:"Amila",amount:12500,advance:0,pay1:5000,pay2:7500,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"2 days",about:"Python work",dateStarted:"2026-03-06",deadline:"2026-03-29",whatsapp:""},{id:18,code:"#Mar-09-018",name:"Sinhala Assessment",client:"Amila",amount:4500,advance:4500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 day",about:"Sinhala work",dateStarted:"2026-03-09",deadline:"2026-03-31",whatsapp:""},{id:19,code:"#Mar-12-019",name:"Predicting Mental Wellbeing Risk ML",client:"Amila",amount:4000,advance:4000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 day",about:"Research proposal",dateStarted:"2026-03-12",deadline:"2026-04-01",whatsapp:""},{id:20,code:"#Mar-15-020",name:"2nd Sinhala work",client:"Amila",amount:8500,advance:8500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 day",about:"",dateStarted:"2026-03-15",deadline:"2026-04-04",whatsapp:""},{id:21,code:"#Mar-12-021",name:"Business analyst Excel",client:"Amila",amount:6000,advance:6000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"3 days",about:"Excel work",dateStarted:"2026-03-12",deadline:"2026-04-01",whatsapp:""},{id:22,code:"#Mar-15-022",name:"4th sinhala assessment",client:"Amila",amount:1500,advance:1500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 day",about:"",dateStarted:"2026-03-15",deadline:"2026-04-04",whatsapp:""},{id:23,code:"#Mar-15-023",name:"3rd sinhala assessment 2 reports",client:"Amila",amount:6000,advance:6000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 day",about:"",dateStarted:"2026-03-15",deadline:"2026-04-04",whatsapp:""},{id:24,code:"#Mar-15-024",name:"Web Ad Optimization UCB-RL",client:"Amila",amount:15000,advance:10000,pay1:5000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"5 days",about:"ML project",dateStarted:"2026-03-15",deadline:"2026-04-01",whatsapp:""},{id:25,code:"#Mar-17-025",name:"Sinhala assessment 5000 word",client:"Amila",amount:5000,advance:5000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 day",about:"",dateStarted:"2026-03-17",deadline:"2026-04-03",whatsapp:""},{id:26,code:"#Mar-20-026",name:"Network Intrusion Detection Systems",client:"Amila",amount:15000,advance:7500,pay1:7500,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Cyber attack detection",dateStarted:"2026-03-20",deadline:"2026-04-08",whatsapp:""},{id:27,code:"#Mar-23-027",name:"5th sinhala assessment",client:"Amila",amount:4500,advance:4500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 day",about:"",dateStarted:"2026-03-23",deadline:"2026-04-05",whatsapp:""},{id:28,code:"#Mar-24-028",name:"HELL PIZZA NEW ZEALAND",client:"Amila",amount:10000,advance:10000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Business analysis",dateStarted:"2026-03-24",deadline:"2026-04-11",whatsapp:""},{id:29,code:"#Mar-12-029",name:"GIS Remote sensing Research",client:"Amila",amount:7000,advance:7000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"",dateStarted:"2026-03-12",deadline:"2026-04-10",whatsapp:""},{id:30,code:"#Mar-24-030",name:"Social media app report",client:"Amila",amount:10000,advance:5000,pay1:5000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"2 weeks",about:"Report",dateStarted:"2026-03-24",deadline:"2026-04-17",whatsapp:""},{id:31,code:"#Mar-23-031",name:"Measuring stock market volatile",client:"Amila",amount:6500,advance:6500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Finance analysis",dateStarted:"2026-03-23",deadline:"2026-04-11",whatsapp:""},{id:32,code:"#Mar-27-032",name:"SPSS 3RD WORK",client:"Amila",amount:5000,advance:5000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Statistics",dateStarted:"2026-03-27",deadline:"2026-04-15",whatsapp:""},{id:33,code:"#Mar-29-033",name:"Employee Brand Citizenship spss",client:"Amila",amount:10000,advance:10000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"SPSS analysis",dateStarted:"2026-03-29",deadline:"2026-04-17",whatsapp:""},{id:34,code:"#Mar-30-034",name:"Sinhala Microeconomics Reports",client:"Amila",amount:4000,advance:4000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"4 days",about:"",dateStarted:"2026-03-30",deadline:"2026-04-15",whatsapp:""},{id:35,code:"#Mar-30-035",name:"DIGITAL entrepreneurship",client:"Amila",amount:3000,advance:3000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"4 days",about:"",dateStarted:"2026-03-30",deadline:"2026-04-15",whatsapp:""},{id:36,code:"#Mar-30-036",name:"Feedback correction group",client:"Amila",amount:7500,advance:7000,pay1:500,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"4 days",about:"Corrections",dateStarted:"2026-03-30",deadline:"2026-04-15",whatsapp:""},{id:37,code:"#Apr-01-037",name:"Detection of Phishing Websites ML",client:"Amila",amount:5000,advance:5000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"4 days",about:"ML project",dateStarted:"2026-04-01",deadline:"2026-04-17",whatsapp:""},{id:38,code:"#Apr-03-038",name:"Effective School Administration Report",client:"Amila",amount:10000,advance:10000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Report",dateStarted:"2026-04-03",deadline:"2026-04-22",whatsapp:""},{id:39,code:"#Apr-05-039",name:"Sinhala research and proposal",client:"Amila",amount:9000,advance:9000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"",dateStarted:"2026-04-05",deadline:"2026-04-24",whatsapp:""},{id:40,code:"#Apr-09-040",name:"New Report 2000",client:"Amila",amount:2000,advance:2000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"2 days",about:"",dateStarted:"2026-04-09",deadline:"2026-04-23",whatsapp:""},{id:41,code:"#Apr-01-041",name:"Sata work",client:"Amila",amount:10000,advance:3500,pay1:3500,pay2:3000,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Data work",dateStarted:"2026-04-01",deadline:"2026-04-20",whatsapp:""},{id:42,code:"#Apr-01-042",name:"Proposal and report",client:"Amila",amount:8000,advance:4000,pay1:4000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"",dateStarted:"2026-04-01",deadline:"2026-04-20",whatsapp:""},{id:43,code:"#Mar-31-043",name:"Drake circle Solutions",client:"Amila",amount:20000,advance:7000,pay1:13000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"2 weeks",about:"Web solutions",dateStarted:"2026-03-31",deadline:"2026-04-26",whatsapp:""},{id:44,code:"#Apr-01-044",name:"AI-based network security framework",client:"Amila",amount:27500,advance:10000,pay1:7500,pay2:10000,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 month",about:"Major project",dateStarted:"2026-04-01",deadline:"2026-05-13",whatsapp:""},{id:45,code:"#Apr-04-045",name:"Time management and academic performance",client:"Amila",amount:3500,advance:3500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Research",dateStarted:"2026-04-04",deadline:"2026-04-23",whatsapp:""},{id:46,code:"#Apr-05-046",name:"Data set work",client:"Amila",amount:2500,advance:2500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"3 days",about:"",dateStarted:"2026-04-05",deadline:"2026-04-20",whatsapp:""},{id:47,code:"#Apr-05-047",name:"Feedback correction 2",client:"Amila",amount:4000,advance:4000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Corrections",dateStarted:"2026-04-05",deadline:"2026-04-24",whatsapp:""},{id:48,code:"#Apr-08-048",name:"R assessment report",client:"Amila",amount:4000,advance:4000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"R programming",dateStarted:"2026-04-08",deadline:"2026-04-27",whatsapp:""},{id:49,code:"#Apr-07-049",name:"ML Report",client:"Amila",amount:3500,advance:3500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Machine Learning",dateStarted:"2026-04-07",deadline:"2026-04-26",whatsapp:""},{id:50,code:"#Apr-07-050",name:"Modular program report",client:"Amila",amount:2500,advance:2500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"5 days",about:"",dateStarted:"2026-04-07",deadline:"2026-04-24",whatsapp:""},{id:51,code:"#Apr-11-051",name:"Urgent work management",client:"Amila",amount:6500,advance:6500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"2 days",about:"",dateStarted:"2026-04-11",deadline:"2026-04-25",whatsapp:""},{id:52,code:"#Apr-09-052",name:"Sinhala interview spss work",client:"Amila",amount:17000,advance:7000,pay1:10000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"11 days",about:"SPSS + Report",dateStarted:"2026-04-09",deadline:"2026-05-02",whatsapp:""},{id:53,code:"#Apr-09-053",name:"Civil report",client:"Amila",amount:3000,advance:3000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"4 days",about:"",dateStarted:"2026-04-09",deadline:"2026-04-25",whatsapp:""},{id:54,code:"#Apr-08-054",name:"Project ML Cyber",client:"Amila",amount:30000,advance:10000,pay1:0,pay2:0,pay3:0,status:"In Progress",payStatus:"Partial",duration:"1 month",about:"Major ML project",dateStarted:"2026-04-08",deadline:"2026-05-30",whatsapp:""},{id:55,code:"#Apr-12-055",name:"Spss English report research",client:"Amila",amount:17500,advance:7500,pay1:10000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"10 days",about:"SPSS research",dateStarted:"2026-04-12",deadline:"2026-05-04",whatsapp:""},{id:56,code:"#Apr-11-056",name:"8000 word research report",client:"Amila",amount:10000,advance:5000,pay1:5000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"2 weeks",about:"Long report",dateStarted:"2026-04-11",deadline:"2026-05-07",whatsapp:""},{id:57,code:"#Apr-13-057",name:"Marketing Report 2500 words",client:"Amila",amount:5000,advance:5000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"",dateStarted:"2026-04-13",deadline:"2026-05-02",whatsapp:""},{id:58,code:"#Apr-13-058",name:"1000 word report",client:"Amila",amount:1000,advance:1000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"2 days",about:"",dateStarted:"2026-04-13",deadline:"2026-04-27",whatsapp:""},{id:59,code:"#Apr-16-059",name:"AI Removing and feedback",client:"Amila",amount:6400,advance:6400,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"4 days",about:"AI detection removal",dateStarted:"2026-04-16",deadline:"2026-05-02",whatsapp:""},{id:60,code:"#Apr-17-060",name:"Sinhala new 10000",client:"Amila",amount:10000,advance:4000,pay1:6000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"11 days",about:"Sinhala research",dateStarted:"2026-04-17",deadline:"2026-05-10",whatsapp:""},{id:61,code:"#Apr-17-061",name:"Sinhala spss work new",client:"Amila",amount:10000,advance:5000,pay1:5000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"11 days",about:"SPSS analysis",dateStarted:"2026-04-17",deadline:"2026-05-10",whatsapp:""},{id:62,code:"#Apr-17-062",name:"Cafe web system",client:"Amila",amount:30000,advance:10000,pay1:10000,pay2:10000,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"11 days",about:"Web development",dateStarted:"2026-04-17",deadline:"2026-04-30",whatsapp:""},{id:63,code:"#Apr-18-063",name:"Proposal and lit review",client:"Amila",amount:7000,advance:3500,pay1:3500,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"6 days",about:"Research work",dateStarted:"2026-04-18",deadline:"2026-05-06",whatsapp:""},{id:64,code:"#Apr-18-064",name:"Spss work 3.0",client:"Amila",amount:6000,advance:3000,pay1:0,pay2:3000,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"8 days",about:"SPSS",dateStarted:"2026-04-18",deadline:"2026-05-08",whatsapp:""},{id:65,code:"#Apr-18-065",name:"Jupyter notebook work",client:"Amila",amount:7000,advance:0,pay1:0,pay2:7000,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"2 weeks",about:"Python notebook",dateStarted:"2026-04-18",deadline:"2026-05-14",whatsapp:""},{id:66,code:"#Apr-17-066",name:"Hiru TV research",client:"Amila",amount:10000,advance:5000,pay1:5000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"9 days",about:"Media research",dateStarted:"2026-04-17",deadline:"2026-05-08",whatsapp:""},{id:67,code:"#Apr-19-067",name:"Report 2500 words",client:"Amila",amount:2500,advance:2500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"3 days",about:"",dateStarted:"2026-04-19",deadline:"2026-05-04",whatsapp:""},{id:68,code:"#Apr-20-068",name:"Systematic report",client:"Amila",amount:6000,advance:3000,pay1:3000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"4 days",about:"Systematic review",dateStarted:"2026-04-20",deadline:"2026-05-06",whatsapp:""},{id:69,code:"#Apr-20-069",name:"Spss 4.0",client:"Amila",amount:9000,advance:4500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Partial",duration:"20 days",about:"SPSS work",dateStarted:"2026-04-20",deadline:"2026-05-22",whatsapp:""},{id:70,code:"#Apr-18-070",name:"Spss work 2.0",client:"Amila",amount:12000,advance:6000,pay1:6000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"10 days",about:"SPSS",dateStarted:"2026-04-18",deadline:"2026-05-10",whatsapp:""},{id:71,code:"#Apr-22-071",name:"Packet tracing 1 & 3500 words report",client:"Amila",amount:10000,advance:5000,pay1:5000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"5 days",about:"Networking",dateStarted:"2026-04-22",deadline:"2026-05-09",whatsapp:""},{id:72,code:"#Apr-19-072",name:"Report 3000 interview analysis",client:"Amila",amount:4500,advance:4500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"6 days",about:"Interview report",dateStarted:"2026-04-19",deadline:"2026-05-07",whatsapp:""},{id:73,code:"#Apr-23-073",name:"Packet tracing 2",client:"Amila",amount:8000,advance:4000,pay1:4000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"Networking",dateStarted:"2026-04-23",deadline:"2026-05-12",whatsapp:""},{id:74,code:"#Apr-22-074",name:"Business analysts R or python",client:"Amila",amount:8000,advance:4000,pay1:4000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"2 weeks",about:"Data analysis",dateStarted:"2026-04-22",deadline:"2026-05-17",whatsapp:""},{id:75,code:"#Apr-23-075",name:"Lit and intro sinhala report",client:"Amila",amount:4000,advance:1500,pay1:2500,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"",dateStarted:"2026-04-23",deadline:"2026-05-12",whatsapp:""},{id:76,code:"#Apr-24-076",name:"Spss urgent work",client:"Amila",amount:7000,advance:7000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"6 days",about:"SPSS urgent",dateStarted:"2026-04-24",deadline:"2026-05-12",whatsapp:""},{id:77,code:"#Apr-25-077",name:"Spss output given report do",client:"Amila",amount:3500,advance:3500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"1 week",about:"SPSS report",dateStarted:"2026-04-25",deadline:"2026-05-14",whatsapp:""},{id:78,code:"#Apr-24-078",name:"AI art and culture",client:"Amila",amount:8000,advance:8000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"11 days",about:"Art work",dateStarted:"2026-04-24",deadline:"2026-05-17",whatsapp:""},{id:79,code:"#Apr-28-079",name:"Excel simulation work",client:"Amila",amount:10000,advance:5000,pay1:5000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"10 days",about:"Excel modeling",dateStarted:"2026-04-28",deadline:"2026-05-28",whatsapp:""},{id:80,code:"#Apr-25-080",name:"Spss English research",client:"Amila",amount:11000,advance:11000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"15 days",about:"SPSS research",dateStarted:"2026-04-25",deadline:"2026-05-22",whatsapp:""},{id:81,code:"#Apr-28-081",name:"Vehicle Management MSc part 2",client:"Amila",amount:10000,advance:10000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-04-28",deadline:"",whatsapp:""},{id:82,code:"#Apr-28-082",name:"Spss word 15000 interview questionnaire",client:"Amila",amount:17500,advance:7500,pay1:10000,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-04-28",deadline:"",whatsapp:""},{id:83,code:"#Apr-28-083",name:"Sinhala report",client:"Amila",amount:3500,advance:3500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-04-28",deadline:"",whatsapp:""},{id:84,code:"#Apr-19-084",name:"25000 sinhala research",client:"Amila",amount:10000,advance:8000,pay1:2000,pay2:0,pay3:0,status:"Stoped for now",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-04-19",deadline:"",whatsapp:""},{id:85,code:"#Apr-28-085",name:"CSE dataset",client:"Amila",amount:6000,advance:6000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-04-28",deadline:"",whatsapp:""},{id:86,code:"#Apr-29-086",name:"Structure import client",client:"Amila",amount:5000,advance:5000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-04-29",deadline:"",whatsapp:""},{id:87,code:"#Apr-29-087",name:"Hiru TB friend",client:"Amila",amount:12500,advance:5000,pay1:7500,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-04-29",deadline:"",whatsapp:""},{id:89,code:"#Apr-30-089",name:"Sri Lankan Style Budget Tracker",client:"Amila",amount:5000,advance:5000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-04-30",deadline:"",whatsapp:""},{id:90,code:"#Apr-29-090",name:"Data Set work",client:"Amila",amount:2000,advance:2000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-04-29",deadline:"",whatsapp:""},{id:91,code:"#May-07-091",name:"Proposal development teacher",client:"Amila",amount:3000,advance:3000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-07",deadline:"",whatsapp:""},{id:92,code:"#May-07-092",name:"IT proposal AI Development",client:"Amila",amount:9000,advance:9000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-07",deadline:"",whatsapp:""},{id:93,code:"#May-07-093",name:"Proposal Amendment And LR development",client:"Amila",amount:4000,advance:4000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-07",deadline:"",whatsapp:""},{id:94,code:"#May-09-094",name:"Spss 3000 words analysis",client:"Amila",amount:6000,advance:6000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-09",deadline:"",whatsapp:""},{id:95,code:"#May-09-095",name:"Presentation and poster ppt system",client:"Amila",amount:8000,advance:8000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-09",deadline:"",whatsapp:""},{id:96,code:"#May-09-096",name:"Sinhala Presentation",client:"Amila",amount:0,advance:0,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-09",deadline:"",whatsapp:""},{id:97,code:"#May-09-097",name:"Journal articles",client:"Amila",amount:4500,advance:4500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-09",deadline:"",whatsapp:""},{id:98,code:"#May-08-098",name:"Sinhala 3500 report",client:"Amila",amount:3500,advance:3500,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-08",deadline:"",whatsapp:""},{id:99,code:"#May-08-099",name:"Research ppt",client:"Amila",amount:5000,advance:5000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-08",deadline:"",whatsapp:""},{id:100,code:"#May-08-100",name:"Supply chain assessment",client:"Amila",amount:6000,advance:6000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-08",deadline:"",whatsapp:""},{id:101,code:"#May-08-101",name:"Poster ppt SPSS 3000 words analysis",client:"Amila",amount:3000,advance:3000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-08",deadline:"",whatsapp:""},{id:102,code:"#May-08-102",name:"3 Books",client:"Amila",amount:95000,advance:25000,pay1:60000,pay2:10000,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-08",deadline:"",whatsapp:""},{id:103,code:"#May-08-103",name:"Proposal writing new",client:"Amila",amount:0,advance:0,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-08",deadline:"",whatsapp:""},{id:104,code:"#May-13-104",name:"2000 word report sinhala",client:"Amila",amount:2000,advance:2000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-13",deadline:"",whatsapp:""},{id:105,code:"#May-13-105",name:"HRM Report",client:"Amila",amount:5000,advance:5000,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-13",deadline:"",whatsapp:""},{id:106,code:"#May-08-106",name:"New Zealand report",client:"Amila",amount:4200,advance:4200,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Fully Paid",duration:"",about:"",dateStarted:"2026-05-08",deadline:"",whatsapp:""},{id:107,code:"#May-24-107",name:"3000 report new",client:"Amila",amount:3000,advance:0,pay1:0,pay2:0,pay3:0,status:"Completed",payStatus:"Not Paid",duration:"",about:"",dateStarted:"2026-05-24",deadline:"",whatsapp:""},{id:108,code:"#May-24-108",name:"4000 words report",client:"Amila",amount:6000,advance:0,pay1:0,pay2:0,pay3:0,status:"In Progress",payStatus:"Not Paid",duration:"",about:"",dateStarted:"2026-05-24",deadline:"",whatsapp:""},{id:109,code:"#May-24-109",name:"Doctorate proposal",client:"Amila",amount:11000,advance:0,pay1:0,pay2:0,pay3:0,status:"In Progress",payStatus:"Not Paid",duration:"",about:"",dateStarted:"2026-05-24",deadline:"",whatsapp:""},{id:110,code:"#May-27-110",name:"Network packet and ppt",client:"Amila",amount:9000,advance:0,pay1:0,pay2:0,pay3:0,status:"In Progress",payStatus:"Not Paid",duration:"",about:"",dateStarted:"2026-05-27",deadline:"",whatsapp:""}];
+
+let projects=[],nextId=200,editId=null;
+const LS_IMPORTED='fh_imported_v1';
+const LS_NEXTID='fh_nextid_v1';
+
+function setSyncStatus(state,label){const dot=document.getElementById('sync-dot');const lbl=document.getElementById('sync-label');dot.className='sync-dot '+state;lbl.textContent=label;}
+function setLoadingMsg(msg){document.getElementById('loading-msg').textContent=msg;}
+
+async function apiGet(params){
+  const url=API+'?'+new URLSearchParams(params);
+  const r=await fetch(url);
+  return r.json();
+}
+async function apiPost(body){
+  const r=await fetch(API,{method:'POST',body:JSON.stringify(body)});
+  return r.json();
+}
+
+async function init(){
+  setLoadingMsg('Connecting to Google Sheets...');
+  try{
+    nextId=parseInt(localStorage.getItem(LS_NEXTID)||'200');
+    // ALWAYS load from sheet first — sheet is the single source of truth
+    setLoadingMsg('Loading your projects from Google Sheets...');
+    const res=await apiGet({action:'getAll'});
+    if(res.projects && res.projects.length>0){
+      // Sheet already has data — just load it, NEVER overwrite
+      projects=res.projects.map(p=>({...p,id:parseInt(p.id)||p.id,amount:parseFloat(p.amount)||0,advance:parseFloat(p.advance)||0,pay1:parseFloat(p.pay1)||0,pay2:parseFloat(p.pay2)||0,pay3:parseFloat(p.pay3)||0}));
+      // Update nextId to be safely above the highest existing id
+      const maxId=Math.max(...projects.map(p=>parseInt(p.id)||0));
+      if(maxId>=nextId){ nextId=maxId+1; localStorage.setItem(LS_NEXTID,String(nextId)); }
+      localStorage.setItem(LS_IMPORTED,'yes');
+    } else {
+      // Sheet is truly empty — only then import seed data
+      setLoadingMsg('First time setup — importing 110 projects...');
+      const importRes=await apiPost({action:'importAll',projects:SEED});
+      if(importRes.success){
+        localStorage.setItem(LS_IMPORTED,'yes');
+        localStorage.setItem(LS_NEXTID,'200');
+        nextId=200;
+        projects=JSON.parse(JSON.stringify(SEED));
+        setLoadingMsg('Import complete!');
+      }
+    }
+    renderAll();
+    document.getElementById('loading-screen').style.display='none';
+    document.getElementById('app').style.display='flex';
+    setSyncStatus('synced','Synced');
+    document.getElementById('sf-sync').textContent=new Date().toLocaleTimeString();
+  } catch(e){
+    setLoadingMsg('Connection error. Check your internet and refresh. ('+e.message+')');
+    setSyncStatus('error','Error');
+  }
+}
+
+async function loadFromSheet(){
+  setSyncStatus('syncing','Syncing...');
+  const res=await apiGet({action:'getAll'});
+  if(res.projects){
+    projects=res.projects.map(p=>(({...p,id:parseInt(p.id)||p.id,amount:parseFloat(p.amount)||0,advance:parseFloat(p.advance)||0,pay1:parseFloat(p.pay1)||0,pay2:parseFloat(p.pay2)||0,pay3:parseFloat(p.pay3)||0})));
+    renderAll();
+    setSyncStatus('synced','Synced');
+    document.getElementById('sf-sync').textContent=new Date().toLocaleTimeString();
+  }
+}
+
+async function syncNow(){
+  setSyncStatus('syncing','Syncing...');
+  showToast('Syncing with Google Sheets...','info');
+  try{
+    await loadFromSheet();
+    showToast('Synced successfully!','success');
+  } catch(e){
+    setSyncStatus('error','Error');
+    showToast('Sync failed. Check connection.','error');
+  }
+}
+
+const pd=p=>(parseFloat(p.advance)||0)+(parseFloat(p.pay1)||0)+(parseFloat(p.pay2)||0)+(parseFloat(p.pay3)||0);
+const bl=p=>(parseFloat(p.amount)||0)-pd(p);
+const fmt=n=>'Rs. '+Math.round(n||0).toLocaleString();
+const fmtK=n=>n>=1000?'Rs.'+(n/1000).toFixed(0)+'k':'Rs.'+Math.round(n||0);
+function sb(s){const m={'Completed':'badge-done','In Progress':'badge-progress','Pending':'badge-pending','Stoped for now':'badge-stopped'};return`<span class="badge ${m[s]||'badge-stopped'}">${s||'—'}</span>`;}
+function pb(s){const m={'Fully Paid':'badge-paid','Partial':'badge-partial','Not Paid':'badge-notpaid'};return`<span class="badge ${m[s]||'badge-notpaid'}">${s||'—'}</span>`;}
+function prog(p){const pct=p.amount>0?Math.min(100,Math.round(pd(p)/p.amount*100)):0;return`<div class="progress-wrap"><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div><span class="progress-pct">${pct}%</span></div>`;}
+
+function renderAll(){rDash();renderProjects();rActive();rPay();uNav();}
+function uNav(){document.getElementById('nb-projects').textContent=projects.length;document.getElementById('nb-active').textContent=projects.filter(p=>p.status==='In Progress').length;document.getElementById('nb-unpaid').textContent=projects.filter(p=>p.payStatus!=='Fully Paid').length;document.getElementById('sf-rev').textContent=fmt(projects.reduce((s,p)=>s+(parseFloat(p.amount)||0),0));}
+
+function rDash(){
+  const total=projects.length,active=projects.filter(p=>p.status==='In Progress').length,completed=projects.filter(p=>p.status==='Completed').length;
+  const totalRev=projects.reduce((s,p)=>s+(parseFloat(p.amount)||0),0),totalPaid=projects.reduce((s,p)=>s+pd(p),0),totalBal=projects.reduce((s,p)=>s+bl(p),0);
+  document.getElementById('dash-stats').innerHTML=`<div class="stat-card c-purple"><div class="stat-label">Total projects</div><div class="stat-value">${total}</div><div class="stat-sub">All time</div></div><div class="stat-card c-blue"><div class="stat-label">In progress</div><div class="stat-value">${active}</div><div class="stat-sub">Active now</div></div><div class="stat-card c-green"><div class="stat-label">Completed</div><div class="stat-value">${completed}</div><div class="stat-sub">${Math.round(completed/total*100)}% rate</div></div><div class="stat-card c-purple"><div class="stat-label">Total revenue</div><div class="stat-value small">${fmt(totalRev)}</div></div><div class="stat-card c-green"><div class="stat-label">Collected</div><div class="stat-value small">${fmt(totalPaid)}</div></div><div class="stat-card c-red"><div class="stat-label">Balance due</div><div class="stat-value small">${fmt(totalBal)}</div></div>`;
+  const monthly={};projects.forEach(p=>{if(!p.dateStarted)return;const m=String(p.dateStarted).slice(0,7);monthly[m]=(monthly[m]||0)+(parseFloat(p.amount)||0);});
+  const keys=Object.keys(monthly).sort().slice(-8),vals=keys.map(k=>monthly[k]),max=Math.max(...vals,1);
+  const mons={1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'};
+  document.getElementById('chart-area').innerHTML=`<div class="bar-chart">${keys.map((k,i)=>{const h=Math.max(4,Math.round(vals[i]/max*110));return`<div class="bar-group"><span class="bar-val">${fmtK(vals[i])}</span><div class="bar" style="height:${h}px"></div><span class="bar-label">${mons[parseInt(k.slice(5))]}</span></div>`;})}</div>`;
+  const attn=projects.filter(p=>p.payStatus!=='Fully Paid'||p.status==='In Progress').slice(0,8);
+  const ab=document.getElementById('attention-tbody');
+  if(!attn.length){ab.innerHTML='<tr><td colspan="3"><div class="empty"><p>All clear!</p></div></td></tr>';}
+  else ab.innerHTML=attn.map(p=>`<tr><td><div class="project-name" style="max-width:160px">${p.name}</div><div class="project-sub">${p.code}</div></td><td class="amount ${bl(p)>0?'amount-red':''}">${fmt(bl(p))}</td><td>${pb(p.payStatus)}</td></tr>`).join('');
+  document.getElementById('recent-tbody').innerHTML=[...projects].reverse().slice(0,8).map(p=>`<tr><td class="mono">${p.code}</td><td><div class="project-name">${p.name}</div><div class="project-sub">${p.client} ${p.duration?'· '+p.duration:''}</div></td><td class="amount">${fmt(p.amount)}</td><td>${prog(p)}</td><td>${sb(p.status)}</td><td>${pb(p.payStatus)}</td></tr>`).join('');
+}
+
+function renderProjects(){
+  const q=(document.getElementById('search-input').value||'').toLowerCase(),fs=document.getElementById('filter-status').value,fp=document.getElementById('filter-payment').value;
+  const rows=projects.filter(p=>{if(q&&!p.name.toLowerCase().includes(q)&&!(p.code||'').toLowerCase().includes(q))return false;if(fs&&p.status!==fs)return false;if(fp&&p.payStatus!==fp)return false;return true;});
+  const tbody=document.getElementById('projects-tbody');
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="10"><div class="empty"><p>No projects found.</p></div></td></tr>';return;}
+  tbody.innerHTML=rows.map((p,i)=>`<tr><td style="color:var(--text3);font-size:12px">${i+1}</td><td class="mono">${p.code||''}</td><td><div class="project-name">${p.name}</div><div class="project-sub">${p.client||''} ${p.duration?'· '+p.duration:''}</div></td><td class="amount">${fmt(p.amount)}</td><td>${prog(p)}</td><td class="amount ${bl(p)>0?'amount-red':'amount-green'}">${fmt(bl(p))}</td><td>${sb(p.status)}</td><td>${pb(p.payStatus)}</td><td style="font-size:12px;color:var(--text3)">${p.duration||'—'}</td><td><div class="row-actions"><button class="icon-btn" onclick="editProject(${JSON.stringify(p.id)})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="icon-btn delete" onclick="deleteProject(${JSON.stringify(p.id)})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button></div></td></tr>`).join('');
+}
+
+function rActive(){
+  const rows=projects.filter(p=>p.status==='In Progress');
+  const tbody=document.getElementById('active-tbody');
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="8"><div class="empty"><p>No active projects right now.</p></div></td></tr>';return;}
+  tbody.innerHTML=rows.map(p=>`<tr><td class="mono">${p.code||''}</td><td><div class="project-name">${p.name}</div></td><td class="amount">${fmt(p.amount)}</td><td class="amount amount-green">${fmt(pd(p))}</td><td class="amount amount-red">${fmt(bl(p))}</td><td>${pb(p.payStatus)}</td><td style="font-size:12px;color:var(--text3)">${p.duration||'—'}</td><td><div class="row-actions"><button class="icon-btn" onclick="editProject(${JSON.stringify(p.id)})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td></tr>`).join('');
+}
+
+function rPay(){
+  const totalRev=projects.reduce((s,p)=>s+(parseFloat(p.amount)||0),0),totalPaid=projects.reduce((s,p)=>s+pd(p),0),totalBal=projects.reduce((s,p)=>s+bl(p),0),unpaid=projects.filter(p=>p.payStatus!=='Fully Paid');
+  document.getElementById('pay-stats').innerHTML=`<div class="stat-card c-purple"><div class="stat-label">Total billed</div><div class="stat-value small">${fmt(totalRev)}</div></div><div class="stat-card c-green"><div class="stat-label">Collected</div><div class="stat-value small">${fmt(totalPaid)}</div></div><div class="stat-card c-red"><div class="stat-label">Outstanding</div><div class="stat-value small">${fmt(totalBal)}</div></div><div class="stat-card c-amber"><div class="stat-label">Unpaid projects</div><div class="stat-value">${unpaid.length}</div></div>`;
+  const tb=document.getElementById('pay-tbody');
+  if(!unpaid.length)tb.innerHTML='<tr><td colspan="6"><div class="empty"><p>All payments collected!</p></div></td></tr>';
+  else tb.innerHTML=unpaid.map(p=>`<tr class="${bl(p)>0?'highlight-row':''}"><td class="mono">${p.code||''}</td><td style="font-weight:500">${p.name}</td><td class="amount">${fmt(p.amount)}</td><td class="amount">${fmt(pd(p))}</td><td class="amount amount-red" style="font-weight:600">${fmt(bl(p))}</td><td>${pb(p.payStatus)}</td></tr>`).join('');
+  document.getElementById('pay-all-tbody').innerHTML=projects.map(p=>`<tr><td class="mono">${p.code||''}</td><td style="font-size:12px;max-width:180px">${p.name}</td><td class="amount">${fmt(p.amount)}</td><td class="amount">${fmt(p.advance)}</td><td class="amount">${fmt(p.pay1)}</td><td class="amount">${fmt(p.pay2)}</td><td class="amount">${fmt(p.pay3)}</td><td class="amount ${bl(p)>0?'amount-red':'amount-green'}">${fmt(bl(p))}</td><td>${pb(p.payStatus)}</td></tr>`).join('');
+}
+
+function showPage(name,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');const t={dashboard:'Dashboard',projects:'All projects',active:'In progress',payments:'Payments'};document.getElementById('topbar-title').textContent=t[name]||'';if(window.innerWidth<768)document.getElementById('sidebar').classList.remove('open');}
+function openModal(id){editId=id||null;document.getElementById('modal-title').textContent=id?'Edit project':'Add new project';if(!id)resetForm();document.getElementById('modal-overlay').classList.add('open');setTimeout(()=>document.getElementById('f-name').focus(),300);}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');editId=null;}
+function closeModalOutside(e){if(e.target.id==='modal-overlay')closeModal();}
+function resetForm(){['f-name','f-amount','f-advance','f-pay1','f-pay2','f-pay3','f-duration','f-about','f-date','f-deadline'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}); document.getElementById('f-client').value='Amila';document.getElementById('f-status').value='In Progress';document.getElementById('f-paystatus').value='Not Paid';document.getElementById('f-date').value=new Date().toISOString().slice(0,10);calcPaid();}
+function editProject(id){const p=projects.find(x=>String(x.id)===String(id));if(!p)return;openModal(id);setTimeout(()=>{document.getElementById('f-name').value=p.name||'';document.getElementById('f-client').value=p.client||'Amila';document.getElementById('f-amount').value=p.amount||'';document.getElementById('f-advance').value=p.advance||'';document.getElementById('f-pay1').value=p.pay1||'';document.getElementById('f-pay2').value=p.pay2||'';document.getElementById('f-pay3').value=p.pay3||'';document.getElementById('f-status').value=p.status||'In Progress';document.getElementById('f-paystatus').value=p.payStatus||'Not Paid';document.getElementById('f-duration').value=p.duration||'';document.getElementById('f-about').value=p.about||'';document.getElementById('f-date').value=p.dateStarted||'';document.getElementById('f-deadline').value=p.deadline||'';calcPaid();},50);}
+function calcPaid(){const amt=parseInt(document.getElementById('f-amount').value)||0,adv=parseInt(document.getElementById('f-advance').value)||0,p1=parseInt(document.getElementById('f-pay1').value)||0,p2=parseInt(document.getElementById('f-pay2').value)||0,p3=parseInt(document.getElementById('f-pay3').value)||0,tot=adv+p1+p2+p3,b=amt-tot;document.getElementById('form-calc').innerHTML=`<span>Total paid: <strong style="color:var(--green)">${fmt(tot)}</strong></span><span>Balance: <strong style="color:${b>0?'var(--red)':'var(--green)'}">${fmt(b)}</strong></span>${amt>0?`<span>Collected: <strong>${Math.round(tot/amt*100)}%</strong></span>`:''}`;}
+
+async function saveProject(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){alert('Project name is required');return;}
+  const saveBtn=document.getElementById('save-btn');
+  saveBtn.disabled=true;saveBtn.textContent='Saving...';
+  setSyncStatus('syncing','Saving...');
+  const data={name,client:document.getElementById('f-client').value,amount:parseInt(document.getElementById('f-amount').value)||0,advance:parseInt(document.getElementById('f-advance').value)||0,pay1:parseInt(document.getElementById('f-pay1').value)||0,pay2:parseInt(document.getElementById('f-pay2').value)||0,pay3:parseInt(document.getElementById('f-pay3').value)||0,status:document.getElementById('f-status').value,payStatus:document.getElementById('f-paystatus').value,duration:document.getElementById('f-duration').value,about:document.getElementById('f-about').value,dateStarted:document.getElementById('f-date').value,deadline:document.getElementById('f-deadline').value,whatsapp:''};
+  try{
+    if(editId!==null){
+      data.id=editId;
+      await apiPost({action:'update',project:data});
+      showToast('Project updated!','success');
+    } else {
+      const id=nextId++;
+      const d=data.dateStarted||new Date().toISOString().slice(0,10);
+      const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      data.id=id;
+      data.code='#'+months[parseInt(d.slice(5,7))-1]+'-'+d.slice(8,10)+'-'+String(id).padStart(3,'0');
+      localStorage.setItem('fh_nextid_v1',String(nextId));
+      await apiPost({action:'add',project:data});
+      showToast('Project saved to Google Sheets!','success');
+    }
+    closeModal();
+    await loadFromSheet();
+  } catch(e){
+    showToast('Save failed. Check connection.','error');
+    setSyncStatus('error','Error');
+  } finally{
+    saveBtn.disabled=false;saveBtn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save project';
+  }
+}
+
+async function deleteProject(id){
+  if(!confirm('Delete this project from Google Sheets? This cannot be undone.'))return;
+  setSyncStatus('syncing','Deleting...');
+  try{
+    await apiPost({action:'delete',id:String(id)});
+    showToast('Deleted from Google Sheets','success');
+    await loadFromSheet();
+  } catch(e){
+    showToast('Delete failed.','error');
+    setSyncStatus('error','Error');
+  }
+}
+
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  const icon=document.getElementById('toast-icon');
+  document.getElementById('toast-msg').textContent=msg;
+  t.className='toast '+type+' show';
+  if(type==='success')icon.innerHTML='<polyline points="20 6 9 17 4 12"/>';
+  else if(type==='error')icon.innerHTML='<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>';
+  else icon.innerHTML='<circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/>';
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+// ── PASSWORD LOCK ──
+const CORRECT_HASH = 'ad356a1e180a505683c32b1b246f0d5eed9be06baa02985464764abc5e305f01'; // "password" default - will be set by user
+const LOCK_KEY = 'fh_unlocked_v1';
+const ATTEMPTS_KEY = 'fh_attempts_v1';
+const LOCKOUT_KEY = 'fh_lockout_v1';
+let customHash = localStorage.getItem('fh_pw_hash') || CORRECT_HASH;
+
+// Simple hash function (SHA-256 like using subtle crypto)
+async function hashStr(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function checkLockScreen() {
+  // Check lockout first
+  const lockout = parseInt(localStorage.getItem(LOCKOUT_KEY) || '0');
+  if (lockout > Date.now()) {
+    const mins = Math.ceil((lockout - Date.now()) / 60000);
+    document.getElementById('lock-error').textContent = `Too many attempts. Try again in ${mins} min.`;
+    document.getElementById('lock-btn').disabled = true;
+    document.getElementById('lock-input').disabled = true;
+    setTimeout(checkLockScreen, 10000);
+    return;
+  }
+  // Check session
+  const unlocked = sessionStorage.getItem(LOCK_KEY);
+  if (unlocked === 'yes') {
+    document.getElementById('lock-screen').style.display = 'none';
+  }
+}
+
+async function checkPassword() {
+  const val = document.getElementById('lock-input').value;
+  if (!val) return;
+  const hash = await hashStr(val);
+  const attempts = parseInt(localStorage.getItem(ATTEMPTS_KEY) || '0');
+  if (hash === customHash) {
+    localStorage.setItem(ATTEMPTS_KEY, '0');
+    sessionStorage.setItem(LOCK_KEY, 'yes');
+    document.getElementById('lock-screen').style.display = 'none';
+  } else {
+    const newAttempts = attempts + 1;
+    localStorage.setItem(ATTEMPTS_KEY, String(newAttempts));
+    document.getElementById('lock-input').classList.add('shake');
+    document.getElementById('lock-error').textContent = `Wrong password. ${5 - newAttempts} attempts left.`;
+    document.getElementById('lock-input').value = '';
+    lockDots();
+    setTimeout(() => document.getElementById('lock-input').classList.remove('shake'), 400);
+    if (newAttempts >= 5) {
+      const lockUntil = Date.now() + 15 * 60 * 1000; // 15 min lockout
+      localStorage.setItem(LOCKOUT_KEY, String(lockUntil));
+      localStorage.setItem(ATTEMPTS_KEY, '0');
+      document.getElementById('lock-error').textContent = 'Too many attempts. Locked for 15 minutes.';
+      document.getElementById('lock-btn').disabled = true;
+      document.getElementById('lock-input').disabled = true;
+    }
+  }
+}
+
+function lockKeyUp(e) {
+  if (e.key === 'Enter') checkPassword();
+}
+
+function lockDots() {
+  const val = document.getElementById('lock-input').value;
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('d' + i).classList.toggle('filled', val.length >= i);
+  }
+}
+
+function toggleLockVis() {
+  const inp = document.getElementById('lock-input');
+  const icon = document.getElementById('lock-eye-icon');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  } else {
+    inp.type = 'password';
+    icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  }
+}
+
+function showHint() {
+  const hint = localStorage.getItem('fh_pw_hint') || 'Default password: freelance2024';
+  alert('Hint: ' + hint);
+}
+
+// Change password feature (accessible after login from settings)
+async function changePassword(newPw, hint) {
+  const hash = await hashStr(newPw);
+  localStorage.setItem('fh_pw_hash', hash);
+  if (hint) localStorage.setItem('fh_pw_hint', hint);
+  customHash = hash;
+  showToast('Password updated!', 'success');
+}
+
+// Check on load
+checkLockScreen();
+
+init();
+</script>
+</body>
+</html>
